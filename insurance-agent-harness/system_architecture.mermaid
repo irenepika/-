@@ -1,0 +1,76 @@
+graph TB
+    subgraph Realtime["🔵 实时对话链路 (Real-time Runtime Loop)"]
+        User["👤 用户输入<br/>User Input"] -->|1. 接收消息| CoreLoop["⚙️ Harness Core Loop<br/>━━━━━━━━━━━━━<br/>主循环编排器"]
+
+        CoreLoop -->|2. 拉取画像| Memory["💾 Memory Manager<br/>━━━━━━━━━━━━━<br/>用户画像 + 对话历史"]
+        Memory -->|返回 DISC 类型| CoreLoop
+
+        CoreLoop -->|3. 合规检查| Guardrails["🛡️ Guardrails<br/>━━━━━━━━━━━━━<br/>关键词拦截<br/>夸大表述检测"]
+        Guardrails -->|通过/拦截| CoreLoop
+
+        CoreLoop -->|4. 生成话术| SalesActor["🤖 Sales Actor (GPT-4o)<br/>━━━━━━━━━━━━━<br/>个性化话术生成<br/>基于 DISC 风格"]
+
+        SalesActor -->|5. 调用工具| ToolRegistry["🔧 Tool Registry<br/>━━━━━━━━━━━━━<br/>Function Calling"]
+        ToolRegistry -->|计算保费| Calculator["💰 Calculator<br/>保费测算"]
+        ToolRegistry -->|检索条款| Retriever["📋 Retriever<br/>条款检索"]
+        Calculator -->|返回结果| SalesActor
+        Retriever -->|返回结果| SalesActor
+
+        SalesActor -->|6. 返回回复| CoreLoop
+        CoreLoop -->|7. 保存历史| Memory
+        CoreLoop -->|8. 输出| Response["💬 回复用户<br/>Response"]
+    end
+
+    subgraph Async["🟠 异步状态更新链路 (Async State Tracking)"]
+        Response -.->|9. 非阻塞触发| Window["📝 对话窗口<br/>━━━━━━━━━━━━━<br/>最近 3-5 轮对话"]
+        Window -->|10. 提交分析| IntentClassifier["🎯 Intent Classifier (GPT-4o-mini)<br/>━━━━━━━━━━━━━<br/>客温判定<br/>漏斗状态识别"]
+        IntentClassifier -->|11. 提取状态| StateUpdate["🌡️ 状态更新<br/>━━━━━━━━━━━━━<br/>客温: cold/neutral/warm/hot<br/>漏斗: awareness→purchase"]
+        StateUpdate -.->|12. 异步写入| Memory
+    end
+
+    subgraph Offline["🟢 离线批处理与评测链路 (Offline Batch & Evals)"]
+        subgraph Profiler["📊 DISC 画像生成"]
+            Logs["📜 历史日志<br/>━━━━━━━━━━━━━<br/>JSONL 审计日志"] -->|13. 定时拉取| DataLoader["📥 Data Loader<br/>批量加载对话"]
+            DataLoader -->|14. 分析| DISCAnalyzer["🔬 DISC Analyzer (GPT-4o)<br/>━━━━━━━━━━━━━<br/>性格侧写<br/>证据链生成"]
+            DISCAnalyzer -->|15. 生成报告| DISCReport["📈 DISC 报告<br/>━━━━━━━━━━━━━<br/>D/I/S/C 类型<br/>互动风格建议"]
+            DISCReport -.->|16. 推送| Memory
+        end
+
+        subgraph Evals["⚖️ 自动化评测系统"]
+            TestSet["📋 测试集<br/>━━━━━━━━━━━━━<br/>JSONL 格式<br/>合规/销售/工具"] -->|17. 加载| EvalsEngine["⚡ Evals Engine<br/>━━━━━━━━━━━━━<br/>批量评测运行器"]
+
+            EvalsEngine -->|Model Graded| ModelGraded["🤖 Judge Evaluator<br/>━━━━━━━━━━━━━<br/>LLM-as-a-Judge<br/>多维度打分"]
+            EvalsEngine -->|Exact Match| ExactMatch["📏 规则匹配<br/>━━━━━━━━━━━━━<br/>关键词/正则<br/>合规检查"]
+
+            ModelGraded -->|输出分数| Benchmark["📊 Benchmark 报告<br/>━━━━━━━━━━━━━<br/>JSON/MD/HTML<br/>转化潜力/专业度"]
+            ExactMatch -->|输出结果| Benchmark
+        end
+    end
+
+    subgraph Schemas["📋 数据契约层 (Pydantic)"]
+        StateModels["State Models<br/>━━━━━━━━━━━━━<br/>UserProfile<br/>FunnelState<br/>CustomerTemperature"]
+        EvalMetrics["Eval Metrics<br/>━━━━━━━━━━━━━<br/>评测结果定义<br/>性能指标"]
+    end
+
+    subgraph Infrastructure["🏗️ 基础设施层"]
+        Output["📁 Output 目录<br/>━━━━━━━━━━━━━<br/>logs/<br/>user_profiles/<br/>evals/"]
+        Config["⚙️ 配置管理<br/>━━━━━━━━━━━━━<br/>.env<br/>requirements.txt"]
+    end
+
+    CoreLoop --> Schemas
+    EvalsEngine --> Schemas
+    CoreLoop --> Infrastructure
+    EvalsEngine --> Infrastructure
+
+    User -.-> Async
+
+    style Realtime fill:#e3f2fd,stroke:#2196f3,stroke-width:3px
+    style Async fill:#fff3e0,stroke:#ff9800,stroke-width:3px
+    style Offline fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
+    style Schemas fill:#f3e5f5,stroke:#9c27b0
+    style Infrastructure fill:#eceff1,stroke:#607d8b
+
+    linkStyle 0 stroke:#2196f3,stroke-width:2px
+    linkStyle 9 stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5
+    linkStyle 12 stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5
+    linkStyle 16 stroke:#4caf50,stroke-width:2px,stroke-dasharray: 5 5

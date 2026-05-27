@@ -1,0 +1,42 @@
+sequenceDiagram
+    autonumber
+
+    participant User as 👤 用户
+    participant Core as ⚙️ Core Loop
+    participant Memory as 💾 Memory
+    participant Guard as 🛡️ Guardrails
+    participant Sales as 🤖 Sales Actor
+    participant Tools as 🔧 Tools
+    participant Intent as 🎯 Intent Classifier
+    participant DB as 🗄️ Database
+
+    Note over User,DB: 🔵 实时对话链路 (同步)
+    User->>Core: 发送消息
+    Core->>Memory: 获取用户画像 (DISC)
+    Memory-->>Core: UserProfile
+    Core->>Guard: 合规检查
+    Guard-->>Core: ✓ 通过
+    Core->>Sales: 生成话术
+    Sales->>Tools: 调用保费计算
+    Tools-->>Sales: 计算结果
+    Sales-->>Core: 返回回复
+    Core->>Memory: 保存对话历史
+    Core-->>User: 💬 实时回复
+
+    Note over User,DB: 🟠 异步状态更新 (非阻塞)
+    Core->>Intent: 提交对话窗口
+    Intent->>Intent: 分析客温 + 漏斗状态
+    Intent->>DB: 更新状态
+    DB-->>Memory: 状态同步
+
+    Note over User,DB: 🟢 离线批处理 (定时)
+    loop 每日/每小时
+        DB->>Intent: 批量分析历史
+        Intent->>DB: 更新 DISC 画像
+    end
+
+    Note over User,DB: ⚖️ 离线评测 (定期)
+        DB->>Core: 读取日志进行评测
+        Core->>Core: LLM-as-a-Judge 打分
+        Core->>DB: 保存评测报告
+    end

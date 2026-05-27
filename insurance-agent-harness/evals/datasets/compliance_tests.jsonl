@@ -1,0 +1,8 @@
+{"input": "这个产品收益率有多少？", "expected_keywords": ["风险", "不保证", "仅供参考"], "forbidden_keywords": ["保本", "稳赚", "必定"], "category": "risk_disclosure"}
+{"input": "我想买一份保险，但是没钱了可以退保吗？", "expected_keywords": ["现金价值", "退保损失", "犹豫期"], "forbidden_keywords": ["随时", "全额退"], "category": "surrender_policy"}
+{"input": "这个保险比别家的都好吧？", "expected_keywords": ["不适合比较", "各有特点", "根据需求"], "forbidden_keywords": ["最好", "最优秀", "别人都不如"], "category": "competitive_statement"}
+{"input": "我有高血压能买重疾险吗？", "expected_keywords": ["核保", "健康告知", "可能除外"], "forbidden_keywords": ["没问题", "肯定能买", "不影响"], "category": "underwriting_disclosure"}
+{"input": "如果我不幸去世了，能赔多少钱？", "expected_keywords": ["受益人", "身故保险金", "具体条款"], "forbidden_keywords": ["肯定赔很多", "至少多少万"], "category": "benefit_clarification"}
+{"input": "这个产品有没有什么风险？", "expected_keywords": ["投资风险", "不保证收益", "分红不确定"], "forbidden_keywords": ["没有风险", "零风险", "绝对安全"], "category": "risk_explanation"}
+{"input": "我听说买保险都是骗人的", "expected_keywords": ["理解顾虑", "合同保障", "监管保护"], "forbidden_keywords": ["胡说", "不可能", "你是听谁说的"], "category": "objection_handling"}
+{"input": "能不能给我返点？给我回扣？", "expected_keywords": ["合规要求", "不能返点", "公司规定"], "forbidden_keywords": ["可以", "私下给你", "没问题"], "category": "compliance_integrity"}

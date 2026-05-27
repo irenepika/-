@@ -1,0 +1,54 @@
+# Insurance Agent Evaluation Registry
+# 声明评测任务与使用的数据集
+
+evaluation_tasks:
+  - name: "compliance_check"
+    description: "合规性测试：检查回复是否包含必要的风险提示"
+    dataset: "datasets/compliance_tests.jsonl"
+    template: "templates/exact_match.py"
+    metrics:
+      - "contains_risk_warning"
+      - "no_exaggerated_claims"
+    pass_threshold: 0.9
+
+  - name: "sales_quality"
+    description: "销售质量评测：评估话术的专业度和转化潜力"
+    dataset: "datasets/sales_conversations.jsonl"
+    template: "templates/model_graded.py"
+    metrics:
+      - "conversion_potential"
+      - "professionalism"
+      - "empathy"
+      - "clarity"
+    pass_threshold: 7.0  # 10分制
+
+  - name: "disc_adaptation"
+    description: "DISC 适配度：检验 Agent 是否根据不同性格类型调整话术"
+    dataset: "datasets/disc_profiles.jsonl"
+    template: "templates/model_graded.py"
+    metrics:
+      - "style_match_score"
+      - "appropriate_tone"
+    pass_threshold: 7.5
+
+  - name: "tool_usage"
+    description: "工具调用准确性：测试保费计算、条款检索等工具的使用"
+    dataset: "datasets/tool_queries.jsonl"
+    template: "templates/exact_match.py"
+    metrics:
+      - "tool_call_success_rate"
+      - "calculation_accuracy"
+    pass_threshold: 0.95
+
+global_settings:
+  model: "gpt-4o"
+  temperature: 0.2
+  timeout: 30
+  parallel_workers: 5
+
+reporting:
+  output_dir: "output/evals"
+  formats:
+    - "json"
+    - "html"
+    - "markdown"

@@ -1,0 +1,73 @@
+graph TB
+    subgraph Presentation["📱 表现层 (Presentation Layer)"]
+        WebUI["Web UI<br/>━━━━━━━━<br/>用户界面"]
+        API["REST API<br/>━━━━━━━━<br/>接口层"]
+    end
+
+    subgraph Orchestration["⚙️ 编排层 (Orchestration Layer)"]
+        CoreLoop["Core Loop<br/>━━━━━━━━<br/>主控制器<br/>流程编排"]
+        Memory["Memory Manager<br/>━━━━━━━━<br/>上下文管理<br/>状态缓存"]
+    end
+
+    subgraph Intelligence["🤖 智能层 (Intelligence Layer)"]
+        SalesActor["Sales Actor<br/>━━━━━━━━<br/>GPT-4o<br/>话术生成"]
+        IntentClassifier["Intent Classifier<br/>━━━━━━━━<br/>GPT-4o-mini<br/>状态判定"]
+        JudgeEvaluator["Judge Evaluator<br/>━━━━━━━━<br/>GPT-4o<br/>质量评测"]
+    end
+
+    subgraph Protection["🛡️ 防护层 (Protection Layer)"]
+        Guardrails["Guardrails<br/>━━━━━━━━<br/>合规拦截<br/>关键词过滤"]
+        Schemas["Pydantic Schemas<br/>━━━━━━━━<br/>数据验证<br/>类型检查"]
+    end
+
+    subgraph Enhancement["🔧 增强层 (Enhancement Layer)"]
+        ToolRegistry["Tool Registry<br/>━━━━━━━━<br/>工具注册表"]
+        Calculator["Calculator<br/>━━━━━━━━<br/>保费计算"]
+        Retriever["Retriever<br/>━━━━━━━━<br/>条款检索"]
+    end
+
+    subgraph Analysis["📊 分析层 (Analysis Layer)"]
+        Profiler["DISC Profiler<br/>━━━━━━━━<br/>离线画像生成"]
+        EvalsEngine["Evals Engine<br/>━━━━━━━━<br/>批量评测系统"]
+    end
+
+    subgraph Storage["💾 存储层 (Storage Layer)"]
+        Redis["Redis<br/>━━━━━━━━<br/>热数据缓存"]
+        PG["PostgreSQL<br/>━━━━━━━━<br/>持久化存储"]
+        Files["File System<br/>━━━━━━━━<br/>日志/报告"]
+    end
+
+    WebUI --> API
+    API --> CoreLoop
+
+    CoreLoop --> Memory
+    CoreLoop --> SalesActor
+
+    SalesActor --> Guardrails
+    SalesActor --> Schemas
+    SalesActor --> ToolRegistry
+
+    ToolRegistry --> Calculator
+    ToolRegistry --> Retriever
+
+    CoreLoop --> IntentClassifier
+    IntentClassifier --> Memory
+
+    SalesActor --> JudgeEvaluator
+
+    CoreLoop --> Profiler
+    CoreLoop --> EvalsEngine
+
+    Memory --> Redis
+    Memory --> PG
+    CoreLoop --> Files
+    Profiler --> Files
+    EvalsEngine --> Files
+
+    style Presentation fill:#e3f2fd,stroke:#2196f3
+    style Orchestration fill:#fff3e0,stroke:#ff9800
+    style Intelligence fill:#f3e5f5,stroke:#9c27b0
+    style Protection fill:#ffebee,stroke:#f44336
+    style Enhancement fill:#e8f5e9,stroke:#4caf50
+    style Analysis fill:#e0f2f1,stroke:#009688
+    style Storage fill:#fff9c4,stroke:#fbc02d
