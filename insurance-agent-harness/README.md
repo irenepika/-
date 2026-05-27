@@ -197,7 +197,7 @@ print(disc_report)
 - **评测**: LLM-as-a-Judge + 规则匹配
 - **日志**: JSONL 格式（支持流式读取和审计）
 
-## 面向 OpenAI CTO 的设计亮点
+## 设计亮点：
 
 1. **三层解耦架构**：实时、异步、离线三链路清晰分离
 2. **防幻觉数据契约**：Pydantic 强类型 + 完整审计日志
@@ -211,7 +211,6 @@ print(disc_report)
 - [ ] 集成真实保险 API（核保系统、CRM）
 - [ ] A/B 测试框架
 - [ ] 实时仪表盘（Dashboard）
-- [ ] 多语言支持
 
 ## License
 
